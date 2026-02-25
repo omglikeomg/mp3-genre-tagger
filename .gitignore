@@ -1,6 +1,9 @@
 # Music library (machine-specific)
 Music/
 
+# Per-machine configuration (copy config.example.json → config.json to customise)
+config.json
+
 # Node
 node_modules/
 yarn-error.log

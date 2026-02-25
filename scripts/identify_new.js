@@ -18,11 +18,13 @@
 import fs from "fs";
 import path from "path";
 import * as mm from "music-metadata";
+import { MUSIC_DIR } from "./config.js";
 
 // ---------------------------------------------------------------------------
 // Configuration
 // ---------------------------------------------------------------------------
-const MUSIC_DIR = "./Music";
+// MUSIC_DIR is read from config.json → "musicDir" (defaults to "./Music").
+// Copy config.example.json to config.json and set "musicDir" to customise.
 const SNAPSHOT_FILE = "./library_snapshot.json";
 const OUTPUT_DIR = "./batches";
 const BATCH_SIZE = 10;

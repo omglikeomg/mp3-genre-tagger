@@ -8,8 +8,10 @@
 
 import fs from "fs";
 import path from "path";
+import { MUSIC_DIR } from "./config.js";
 
-const MUSIC_DIR = "./Music";
+// MUSIC_DIR is read from config.json → "musicDir" (defaults to "./Music").
+// Copy config.example.json to config.json and set "musicDir" to customise.
 const SNAPSHOT_FILE = "./library_snapshot.json";
 const AUDIO_EXTENSIONS = new Set([".mp3", ".flac", ".m4a", ".wav"]);
 
