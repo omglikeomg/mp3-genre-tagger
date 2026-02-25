@@ -16,7 +16,9 @@
     "stats:confidence": "node scripts/review-stats.js --confidence",
     "stats:manual": "node scripts/review-stats.js --manual",
     "stats:pairs": "node scripts/review-stats.js --pairs",
-    "stats:low": "node scripts/review-stats.js --low-confidence"
+    "stats:low": "node scripts/review-stats.js --low-confidence",
+    "snapshot": "node scripts/generate-snapshot.js",
+    "scan:new": "node scripts/identify_new.js"
   },
   "dependencies": {
     "music-metadata": "*",

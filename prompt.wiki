@@ -9,9 +9,13 @@ You will receive a JSON file containing objects with the following keys:
 - `filepath`: Physical path to the song.
 - `title`: Name of the track.
 - `artist`: Lead performer.
-- `album_artist`: The primary artist for the album.
+- `album_artist`: The primary artist for the album (may be `"Various Artists"` for multi-artist compilations).
 - `album`: Name of the album.
 - `track_number`: Sequence in the album.
+- `is_compilation`: Boolean. `true` when the track lives under the `Compilations/` folder.
+- `duration`: Track length in minutes.
+- `is_session`: Boolean. `true` when the track is longer than 15 minutes (likely a DJ set or continuous mix).
+- `_change` *(incremental batches only)*: `"new"` if this file was not in the previous snapshot, `"modified"` if its file metadata changed. Absent in initial library batches. Re-evaluate modified tracks regardless of any prior classification.
 
 ## Operating Logic & Constraints
 
@@ -45,13 +49,15 @@ You must verify the Original Release Year of the [Song Title] by [Artist].
 
 Use this verified year to distinguish between "Classic/Vintage" and "Modern" categories as defined in the taxonomy.
 
-### 3. Folder-Based Context
+### 3. Compilation & Various-Artists Handling
 
-If the filepath indicates the song is in the /Compilations/ folder:
+When `is_compilation` is `true`, or the filepath contains `/Compilations/`:
 
-Disregard the album name (e.g., "Greatest Hits" or "Now That's What I Call Music").
-
-Rely strictly on the artist and title for genre identification.
+1. **Disregard the album name** (e.g., "Greatest Hits", "Now That's What I Call Music"). It carries no genre signal.
+2. **Check `album_artist`.**
+   - If `album_artist` is `"Various Artists"` (or any equivalent like `"VA"`, `"Various"`, `"V.A."`), this is a **multi-artist compilation**. Classify at the **track level** using the individual `artist` and `title` fields — do **not** use the album artist for genre lookup in `artist_map.json`.
+   - If `album_artist` is a specific artist name (e.g., a Greatest Hits album), treat it as a normal artist release and apply the artist-mapping shortcut as usual.
+3. For multi-artist compilations, after classifying a track, **add or update the individual `artist` entry** in `artist_map.json` (not the album artist), so future tracks by the same artist stay consistent.
 
 ### 4. Version & Context Detection (Remixes, Covers, Mashups)
 

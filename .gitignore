@@ -10,6 +10,7 @@ batches/
 artist_map.json
 pending_operations.json
 LAST_BATCH
+library_snapshot.json
 
 # OS
 .DS_Store
