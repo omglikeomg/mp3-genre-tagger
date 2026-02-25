@@ -1,0 +1,25 @@
+{
+  "name": "mp3-classifier",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "AI-driven MP3 genre classification and tagging toolkit",
+  "scripts": {
+    "scan": "node scripts/prepare-input.js",
+    "backfill": "node scripts/backfill-genres.js",
+    "backfill:dry": "node scripts/backfill-genres.js --dry-run",
+    "review": "node scripts/resolve-review.js",
+    "review:list": "node scripts/resolve-review.js --list",
+    "review:help": "node scripts/resolve-review.js --help",
+    "stats": "node scripts/review-stats.js --all",
+    "stats:summary": "node scripts/review-stats.js --summary",
+    "stats:genres": "node scripts/review-stats.js --genres",
+    "stats:confidence": "node scripts/review-stats.js --confidence",
+    "stats:manual": "node scripts/review-stats.js --manual",
+    "stats:pairs": "node scripts/review-stats.js --pairs",
+    "stats:low": "node scripts/review-stats.js --low-confidence"
+  },
+  "dependencies": {
+    "music-metadata": "*",
+    "node-id3": "*"
+  }
+}

@@ -1,0 +1,16 @@
+# Music library (machine-specific)
+Music/
+
+# Node
+node_modules/
+yarn-error.log
+
+# Generated runtime files
+batches/
+artist_map.json
+pending_operations.json
+LAST_BATCH
+
+# OS
+.DS_Store
+Thumbs.db
