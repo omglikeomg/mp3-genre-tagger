@@ -18,7 +18,9 @@
     "stats:pairs": "node scripts/review-stats.js --pairs",
     "stats:low": "node scripts/review-stats.js --low-confidence",
     "snapshot": "node scripts/generate-snapshot.js",
-    "scan:new": "node scripts/identify_new.js"
+    "scan:new": "node scripts/identify_new.js",
+    "classify": "./classify.sh",
+    "classify:new": "./classify.sh batches/new_music_batch_*.json"
   },
   "dependencies": {
     "music-metadata": "*",

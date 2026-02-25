@@ -2,7 +2,9 @@
 
 ## Links
 
-- [System Prompt](./prompt.md)
+- [System Prompt / Copilot Instructions](./prompt.md)
+- [AGENTS.md (Copilot CLI auto-loaded instructions)](./AGENTS.md)
+- [Classify Script (Copilot CLI batch loop)](./classify.sh)
 - [Config Module](./scripts/config.js)
 - [Prepare Input Script](./scripts/prepare-input.js)
 - [Backfill Script](./scripts/backfill-genres.js)
@@ -147,7 +149,9 @@ project-root/
 ├── library_snapshot.json         # (generated) File index for incremental updates
 ├── config.json                   # (git-ignored) Per-machine settings (e.g. musicDir)
 ├── config.example.json           # Template for config.json
-└── prompt.md                     # System prompt for the AI agent
+├── prompt.md                     # System prompt for the AI agent (human-readable)
+├── AGENTS.md                     # Copilot CLI auto-loaded instructions (copy of prompt.md)
+└── classify.sh                   # Copilot CLI batch loop (Step 2a)
 ```
 
 ## Step-by-Step Workflow
@@ -171,6 +175,67 @@ This will:
 
 ### Step 2: Feed Batches to the AI Agent
 
+There are two ways to run the classification: automated via **Copilot CLI** (recommended), or manually via a **chat session**.
+
+---
+
+#### Option A: Copilot CLI (Automated)
+
+> **Prerequisites:** The `copilot` CLI requires a GitHub Copilot plan that includes CLI access (currently available on Copilot Enterprise and some Copilot Business plans). If your account doesn't have access yet, use [Option B: Manual Chat Session](#option-b-manual-chat-session) instead — `classify.sh`, `AGENTS.md`, and the related setup are kept in the repo for future use.
+
+The repo includes `AGENTS.md` (a copy of `prompt.md`) which Copilot CLI loads automatically as its system prompt on every invocation. This means the `-p` prompt can be minimal and focused.
+
+**First-time setup** — ensure `AGENTS.md` is in place:
+
+```sh
+cp prompt.md AGENTS.md   # already done if you cloned the repo
+```
+
+**Run all batches unattended:**
+
+```sh
+./classify.sh
+# or: yarn classify
+```
+
+**Run a range of batches:**
+
+```sh
+./classify.sh --from 3        # batch 3 onwards
+./classify.sh --to 5          # batches 1 through 5
+./classify.sh --from 3 --to 7 # batches 3 through 7
+```
+
+**Run a single specific batch:**
+
+```sh
+./classify.sh batches/library_batch_3.json
+```
+
+The script loops through every `batches/library_batch_*.json`, calling:
+
+```sh
+copilot \
+  --model claude-sonnet-4.6 \
+  --yolo \
+  --no-ask-user \
+  --autopilot \
+  -p "Process <batch>. Read artist_map.json with jq first. Classify all tracks.
+      APPEND to pending_operations.json. Update artist_map.json."
+```
+
+| Flag | Purpose |
+|---|---|
+| `--model claude-sonnet-4.6` | Use this specific model |
+| `--yolo` | Pre-approve all file reads/writes/shell commands |
+| `--no-ask-user` | Agent won't pause mid-task to ask questions |
+| `--autopilot` | Auto-continues if the task spans multiple steps |
+| `-p` | Non-interactive — exits cleanly when done |
+
+---
+
+#### Option B: Manual Chat Session
+
 Open a session with your AI agent and provide it with:
 
 1. The **system prompt** from [prompt.md](./prompt.md).
@@ -181,8 +246,6 @@ The agent will handle the rest automatically. For each batch it will:
 - Classify all tracks in the batch.
 - **Append** new results to `pending_operations.json` (accumulating across batches — no manual merging needed).
 - **Update** `artist_map.json` with genres for any newly encountered artists.
-
-#### Per-Batch Loop
 
 For each subsequent batch, instruct the agent:
 
@@ -355,7 +418,9 @@ This prints the full list of valid genre strings.
 |------|------------------------------------------------|---------------------------|----------------------------------------------|
 | —    | `cp config.example.json config.json`           | —                         | Per-machine `config.json`                    |
 | 1    | `node scripts/prepare-input.js`                | `yarn scan`               | `batches/*.json`, `artist_map.json`          |
-| 2    | AI agent session                               | —                         | `pending_operations.json`, `artist_map.json` |
+| 2a   | `./classify.sh`                                | `yarn classify`           | `pending_operations.json`, `artist_map.json` |
+| 2a   | `./classify.sh batches/new_music_batch_*.json` | `yarn classify:new`       | `pending_operations.json`, `artist_map.json` |
+| 2b   | Manual chat session (attach prompt.md + batch) | —                         | `pending_operations.json`, `artist_map.json` |
 | 3a   | `node scripts/review-stats.js --all`           | `yarn stats`              | Console review                               |
 | 3b   | `node scripts/review-stats.js --artist "…"`    | —                         | Console search results                       |
 | 4    | `node scripts/backfill-genres.js --dry-run`    | `yarn backfill:dry`       | Console preview                              |
