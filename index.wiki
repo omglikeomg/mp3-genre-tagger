@@ -295,12 +295,14 @@ This prints every `manual_review` entry with its index number, filepath, reason,
 
 {{{
 node scripts/resolve-review.js --resolve 0 --primary "Jazz" --secondary "Blues"
+# or: yarn review --resolve 0 --primary "Jazz" --secondary "Blues"
 }}}
 
 ==== Resolve an entry by filepath match ====
 
 {{{
 node scripts/resolve-review.js --resolve "Compay Segundo" --primary "Latino [Salsa, Merengue, Son Cubano, Cumbia]"
+# or: yarn review --resolve "Compay Segundo" --primary "Latino [Salsa, Merengue, Son Cubano, Cumbia]"
 }}}
 
 The script will:
@@ -309,7 +311,7 @@ The script will:
 - Add it to `operations` with `"status": "apply"`.
 - Write the updated `pending_operations.json` back to disk.
 
-After resolving entries, run `node scripts/backfill-genres.js` again to tag the newly resolved tracks.
+After resolving entries, run `yarn backfill` (or `node scripts/backfill-genres.js`) again to tag the newly resolved tracks.
 
 ==== Available genres (for --primary / --secondary) ====
 
@@ -331,7 +333,7 @@ This prints the full list of valid genre strings.
 | 4    | `node scripts/backfill-genres.js --dry-run`  | `yarn backfill:dry`  | Console preview                      |
 | 5    | `node scripts/backfill-genres.js`            | `yarn backfill`      | ID3 tags written to MP3s             |
 | 6a   | `node scripts/resolve-review.js --list`      | `yarn review:list`   | Console listing                      |
-| 6b   | `node scripts/resolve-review.js --resolve …` | —                    | Updated `pending_operations.json`    |
+| 6b   | `node scripts/resolve-review.js --resolve …` | `yarn review --resolve …` | Updated `pending_operations.json` |
 | —    | `node scripts/generate-snapshot.js`          | `yarn snapshot`      | `library_snapshot.json`              |
 | A    | `node scripts/identify_new.js`               | `yarn scan:new`      | `batches/new_music_batch_N.json`     |
 

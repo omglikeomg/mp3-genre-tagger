@@ -6,7 +6,7 @@ node_modules/
 yarn-error.log
 
 # Generated runtime files
-batches/
+# batches/
 artist_map.json
 pending_operations.json
 LAST_BATCH
