@@ -10,6 +10,7 @@
     "review": "node scripts/resolve-review.js",
     "review:list": "node scripts/resolve-review.js --list",
     "review:help": "node scripts/resolve-review.js --help",
+    "verify-paths": "node scripts/verify-paths.js",
     "stats": "node scripts/review-stats.js --all",
     "stats:summary": "node scripts/review-stats.js --summary",
     "stats:genres": "node scripts/review-stats.js --genres",
