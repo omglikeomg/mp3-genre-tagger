@@ -21,7 +21,9 @@
     "snapshot": "node scripts/generate-snapshot.js",
     "scan:new": "node scripts/identify_new.js",
     "classify": "./classify.sh",
-    "classify:new": "./classify.sh batches/new_music_batch_*.json"
+    "classify:new": "./classify.sh batches/new_music_batch_*.json",
+    "recover": "node scripts/recover-artist-map.js",
+    "recover:dry": "node scripts/recover-artist-map.js --dry-run"
   },
   "dependencies": {
     "music-metadata": "*",
