@@ -23,7 +23,10 @@
     "classify": "./classify.sh",
     "classify:new": "./classify.sh batches/new_music_batch_*.json",
     "recover": "node scripts/recover-artist-map.js",
-    "recover:dry": "node scripts/recover-artist-map.js --dry-run"
+    "recover:dry": "node scripts/recover-artist-map.js --dry-run",
+    "merge-batch": "node scripts/merge-batch.js",
+    "merge-batch:dry": "node scripts/merge-batch.js --dry-run",
+    "thin-artists": "node scripts/thin-artists.js"
   },
   "dependencies": {
     "music-metadata": "*",

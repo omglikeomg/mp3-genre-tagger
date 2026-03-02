@@ -21,25 +21,25 @@ You will receive a JSON file containing objects with the following keys:
 
 ### 1. Artist-Mapping Shortcut (High Priority)
 
-Before analyzing a song individually, check the provided artist-map.json.
+Before analyzing a song individually, check `artist_map.json`.
 
-If the artist or album_artist is already mapped to a genre in that file, inherit those genres automatically for all tracks by that artist.
+If the artist or album_artist is already mapped to a genre in that file, inherit those genres automatically for all tracks by that artist. This ensures consistency across entire discographies.
 
-This ensures consistency across entire discographies.
+#### Reading the Artist Map
 
-#### Updating the Artist Map (Automatic)
+Before processing a batch, query only the relevant artists using `jq` to avoid loading the full file:
 
-The artist-map.json starts with an artist list, but no genre assignment, that part is blank. You are responsible for keeping it up to date **automatically** as you work:
+```
+jq 'to_entries | map(select(.key | test("Artist1|Artist2|Artist3"; "i"))) | from_entries' artist_map.json
+```
 
-1. Before processing a batch, **read** the current `artist_map.json` from disk.
-  1.1. In order to optimally read `artist_map.json`, use jq to query the file and have a smaller output. The file is too large to be directly read into memory and will consume lots of tokens.
-2. As you classify tracks, whenever you assign genres to an artist for the first time, add their `primary_genre` and `secondary_genre` to your in-memory map.
-3. After finishing a batch, **write** the updated map back to `artist_map.json`.
-  3.1. In the same way as step 1.1, when updating the artist_map.json, try using commands instead of manually parsing the whole file.
-4. On subsequent batches, the map will already contain prior classifications — use them to maintain consistency.
-5. If you encounter conflicting genres for the same artist (e.g., a remix album vs. a studio album), keep the mapping based on the artist's **primary body of work**, not outliers.
+The file is large — never read it whole into context.
 
-> **Important:** You must read and write `artist_map.json` directly. The human should never need to copy-paste or manually merge artist maps between batches.
+#### Updating the Artist Map
+
+You do **not** write to `artist_map.json` directly. Instead, include all new or updated artist classifications in the `artist_map_updates` key of the batch result file (see Output Requirements). The `merge-batch` tool handles writing to disk.
+
+If you encounter conflicting genres for the same artist (e.g., a remix album vs. a studio album), keep the mapping based on the artist's **primary body of work**, not outliers.
 
 ### 2. The "Real Year" Protocol
 
@@ -57,13 +57,13 @@ When `is_compilation` is `true`, or the filepath contains `/Compilations/`:
 2. **Check `album_artist`.**
    - If `album_artist` is `"Various Artists"` (or any equivalent like `"VA"`, `"Various"`, `"V.A."`), this is a **multi-artist compilation**. Classify at the **track level** using the individual `artist` and `title` fields — do **not** use the album artist for genre lookup in `artist_map.json`.
    - If `album_artist` is a specific artist name (e.g., a Greatest Hits album), treat it as a normal artist release and apply the artist-mapping shortcut as usual.
-3. For multi-artist compilations, after classifying a track, **add or update the individual `artist` entry** in `artist_map.json` (not the album artist), so future tracks by the same artist stay consistent.
+3. For multi-artist compilations, include the individual `artist` entry in `artist_map_updates` (not the album artist), so future tracks by the same artist stay consistent.
 
 ### 4. Version & Context Detection (Remixes, Covers, Mashups)
 
 - **Identity Check**: Differentiate between original artists and tribute/remix projects. (e.g., Fleetwood Mac is Rock; Fleetmac Wood is House/Edit-focused).
 - **Remix Logic**: If a track title contains "Remix," "Edit," "Flip," or "Vocal Mix," prioritize the Remixer's style and the specific sub-genre over the original artist's genre.
-- **Genre Pivot**: A "Toxic" remix by a Garage producer should be classified under "house + deep house" or "other upbeat techno", NOT "pop songs".
+- **Genre Pivot**: A "Toxic" remix by a Garage producer should be classified under "UK Garage" or "House", NOT "Pop".
 - **Cover Detection**: If an artist is known for covers (e.g., Postmodern Jukebox), classify based on the style of the performance (Jazz/Swing), not the original songwriter's category.
 
 ### 5. Categorization Algorithm
@@ -75,12 +75,12 @@ For every song, output a Primary Category and a Secondary Category.
 
 #### Long-form DJ Sets & Continuous Mixes
 
-If `duration` is > 15 minutes or `is_session` is true:
-Categorize based on the Mixer/DJ and the predominant genre of the set.
-Confidence levels for Sets should generally be capped at 8, as the content is diverse.
-In the `pending_operations.json`, append "[DJ SET]" to the primary_genre string (e.g., "house + deep house [DJ SET]").
+If `duration` is > 15 minutes or `is_session` is `true`:
+- Categorize based on the Mixer/DJ and the predominant genre of the set.
+- Cap confidence at 8, as the content is diverse.
+- Append `[DJ SET]` to the `primary_genre` string (e.g., `"House [incl. Deep House] [DJ SET]"`).
 
-##Genre Taxonomy
+## Genre Taxonomy
 
 Classify all music strictly into these categories. Do not invent new tags.
 
@@ -127,56 +127,78 @@ Classify all music strictly into these categories. Do not invent new tags.
 </category_list>
 
 ## Output Requirements
-For every track, you must provide a structured response (JSON) with this structure:
+
+### Batch Result File
+
+For every batch, write a single result file to:
+
+```
+batches/output/batch_${NUMBER}_results.json
+```
+
+The file must follow this exact schema:
 
 ```json
 {
+  "batch": 174,
   "operations": [
     {
       "filepath": "Music/Cream/Cream - Disraeli Gears - 01 - Strange Brew.mp3",
       "status": "apply",
-      "primary_genre": "psychedelic",
-      "secondary_genre": "vintage hard rock",
+      "primary_genre": "Hard Rock - Classic - [60s-70s]",
+      "secondary_genre": "Prog & Psychedelia",
       "confidence_1": 10,
       "confidence_2": 9
     }
   ],
   "manual_review": [
     {
-      "filepath": "Music/Compay Segundo/...",
-      "reason": "Genre not in taxonomy (Cuban Son)",
-      "confidence": 4
-    },
-    {
       "filepath": "Music/Vibranz/Vibranz - 01 - Chromaudio - Something.mp3",
       "reason": "Artist unknown, cannot classify",
       "confidence": 1
     }
-  ]
+  ],
+  "artist_map_updates": {
+    "Cream": {
+      "primary_genre": "Hard Rock - Classic - [60s-70s]",
+      "secondary_genre": "Prog & Psychedelia"
+    }
+  }
 }
 ```
 
-Output Requirement: > Write results to `pending_operations.json`.
+### Applying the Results
 
-#### Accumulating Results Across Batches
+After writing the batch result file, run the merge tool to apply it:
 
-You must **accumulate** results across all batches into a single `pending_operations.json` file:
+```
+node scripts/merge-batch.js batches/output/batch_${NUMBER}_results.json
+```
 
-1. Before writing results, **read** the existing `pending_operations.json` from disk (if it exists).
-2. **Append** the new batch's `operations` entries to the existing `operations` array.
-3. **Append** the new batch's `manual_review` entries to the existing `manual_review` array.
-4. **Write** the merged result back to `pending_operations.json`.
-5. Do **not** overwrite previous batches' results. The file must grow with each batch.
+This tool will:
+- Append new `operations` entries to `pending_operations.json`
+- Append new `manual_review` entries to `pending_operations.json`
+- Update `artist_map.json` with all `artist_map_updates`
+- Update `LAST_BATCH` to the batch number
 
-> **Important:** You must read and write `pending_operations.json` directly. The human should never need to manually merge or append results between batches.
+You do **not** need to read or write `pending_operations.json`, `artist_map.json`, or `LAST_BATCH` manually. The tool handles all of that.
 
-#### Classification Rules
+You can use `jq` to inspect the contents of `pending_operations.json` and `artist_map.json` and see your appended data is there. Remember not to access the whole files directly, as they can be very large.
 
-Any track with a confidence score >= 7 should have status: "apply".
-Construct the genre string by combining Primary and Secondary categories separated by a semicolon.
-Any track with confidence < 7 or where the artist is unknown should be placed in the manual_review array with a brief reason.
+You should then delete the batch result file:
+
+```
+rm batches/output/batch_${NUMBER}_results.json
+```
+
+
+### Classification Rules
+
+- Any track with a confidence score >= 7 gets `"status": "apply"` and goes in `operations`.
+- Any track with confidence < 7, or where the artist is unknown, goes in `manual_review` with a brief reason.
+- Confidence levels for DJ sets should be capped at 8.
 
 ### Confidence Thresholds
-- 7 to 10: High confidence. These will be automatically updated.
-- Below 7: Move to the [DISAMBIGUATE] list for manual review.
-- Not Found: If the artist/song cannot be identified, mark as [UNKNOWN].
+- **7–10**: High confidence → `operations` (will be automatically applied to MP3 tags).
+- **Below 7**: Low confidence → `manual_review` for human disambiguation.
+- **Unknown artist**: Mark as `[UNKNOWN]` in the reason field and place in `manual_review`.
