@@ -79,7 +79,12 @@ function backfillGenres() {
       genre: genreString,
     };
 
-    const absPath = path.resolve(MUSIC_ROOT, op.filepath);
+    // Normalize to NFC so that decomposed Unicode characters (NFD) produced on
+    // macOS / in the JSON are translated to the precomposed form (NFC) that
+    // Windows NTFS uses for filenames — prevents spurious ENOENT errors on paths
+    // containing accented or diacritic characters (e.g. ç, õ, Japanese kana).
+    const normalizedFilepath = op.filepath.normalize("NFC");
+    const absPath = path.resolve(MUSIC_ROOT, normalizedFilepath);
 
     // Read the file into a Buffer via Node's fs so that Unicode file paths
     // (e.g. Japanese characters) are handled correctly on Windows.
