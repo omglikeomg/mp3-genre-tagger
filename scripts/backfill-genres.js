@@ -49,6 +49,7 @@ const VALID_GENRES = [
   "Electroswing",
   "House [incl. Deep House]",
   "French House, Filter House",
+  "UK Garage [incl. Dubstep]",
   "Dark Electro [Midtempo, EBM]",
   "World Beats [Organic]",
   "Modern Techno [Minimal, Melodic]",
