@@ -1,3 +1,4 @@
 {
-  "musicDir": "./Music"
+  "musicDir": "./Music",
+  "genreListFile": "./genre-name-list.json"
 }

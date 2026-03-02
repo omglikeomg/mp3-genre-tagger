@@ -84,47 +84,7 @@ If `duration` is > 15 minutes or `is_session` is `true`:
 
 Classify all music strictly into these categories. Do not invent new tags.
 
-<category_list>
-- Vintage Rock [Classic, Rockabilly]
-- Punk [incl. Psychobilly]
-- Nu Metal
-- Traditional Metal [Heavy, Power]
-- Extreme Metal [Death, Black, Doom, Sludge]
-- Prog & Psychedelia
-- Alt-Rock Era [90s-00s, Grunge]
-- Hard Rock - Classic - [60s-70s]
-- Hard Rock - Modern - [80s+]
-- Indie & Shoegaze
-- Jazz
-- Blues
-- Ambient, VGM & OST [Dungeon Synth, VGM]
-- Vaporwave [Barber Beats, Chill]
-- Retrowave [Synthwave]
-- Pop
-- Groove [Funk, Disco, Soul, R&B]
-- Hyperpop
-- Hip Hop [Rap, Trap]
-- Industrial & Goth
-- Trip Hop
-- DnB & Breaks [Jungle]
-- Big Beat & Chemical Breaks
-- Electroswing
-- House [incl. Deep House]
-- French House, Filter House
-- UK Garage [incl. Dubstep]
-- Dark Electro [Midtempo, EBM]
-- World Beats [Organic]
-- Modern Techno [Minimal, Melodic]
-- Techno [Upbeat]
-- Techno [Slower]
-- Americana & Folk [Acoustic]
-- Latino [Salsa, Merengue, Son Cubano, Cumbia]
-- Iberian [Flamenco, Fado, Rumba]
-- Caribbean [Reggae, Ska]
-- Rock Nacional [Uru/Arg]
-- Latin Classics [Tango, Oldies]
-- Classical
-</category_list>
+The canonical genre list is maintained in `genre-name-list.json` at the project root (`music_library_genres` array). Always refer to that file as the single source of truth — do not invent or abbreviate genre names.
 
 ## Output Requirements
 

@@ -11,52 +11,10 @@
 //   node scripts/resolve-review.js --resolve "path/to/file.mp3" --primary "Pop"    # Resolve by filepath match
 
 import fs from "fs";
+import { VALID_GENRES } from "./config.js";
 
 // --- CONFIGURATION ---
 const OPERATIONS_FILE = "./pending_operations.json";
-
-// --- VALID GENRE TAXONOMY ---
-const VALID_GENRES = [
-  "Vintage Rock [Classic, Rockabilly]",
-  "Punk [incl. Psychobilly]",
-  "Nu Metal",
-  "Traditional Metal [Heavy, Power]",
-  "Extreme Metal [Death, Black, Doom, Sludge]",
-  "Prog & Psychedelia",
-  "Alt-Rock Era [90s-00s, Grunge]",
-  "Hard Rock - Classic - [60s-70s]",
-  "Hard Rock - Modern - [80s+]",
-  "Indie & Shoegaze",
-  "Jazz",
-  "Blues",
-  "Ambient, VGM & OST [Dungeon Synth, VGM]",
-  "Vaporwave [Barber Beats, Chill]",
-  "Retrowave [Synthwave]",
-  "Pop",
-  "Groove [Funk, Disco, Soul, R&B]",
-  "Hyperpop",
-  "Hip Hop [Rap, Trap]",
-  "Industrial & Goth",
-  "Trip Hop",
-  "DnB & Breaks [Jungle]",
-  "Big Beat & Chemical Breaks",
-  "Electroswing",
-  "House [incl. Deep House]",
-  "French House, Filter House",
-  "UK Garage [incl. Dubstep]",
-  "Dark Electro [Midtempo, EBM]",
-  "World Beats [Organic]",
-  "Modern Techno [Minimal, Melodic]",
-  "Techno [Upbeat]",
-  "Techno [Slower]",
-  "Americana & Folk [Acoustic]",
-  "Latino [Salsa, Merengue, Son Cubano, Cumbia]",
-  "Iberian [Flamenco, Fado, Rumba]",
-  "Caribbean [Reggae, Ska]",
-  "Rock Nacional [Uru/Arg]",
-  "Latin Classics [Tango, Oldies]",
-  "Classical",
-];
 
 // --- HELPERS ---
 

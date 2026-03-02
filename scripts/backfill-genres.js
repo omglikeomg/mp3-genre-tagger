@@ -12,7 +12,7 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import nodeID3 from "node-id3";
-import { MUSIC_DIR } from "./config.js";
+import { MUSIC_DIR, VALID_GENRES } from "./config.js";
 
 // --- CONFIGURATION ---
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -21,48 +21,7 @@ const OPERATIONS_FILE = path.join(PROJECT_ROOT, "pending_operations.json");
 const MUSIC_ROOT = path.resolve(PROJECT_ROOT, MUSIC_DIR);
 const DRY_RUN = process.argv.includes("--dry-run");
 
-// --- VALID GENRE TAXONOMY ---
-const VALID_GENRES = [
-  "Vintage Rock [Classic, Rockabilly]",
-  "Punk [incl. Psychobilly]",
-  "Nu Metal",
-  "Traditional Metal [Heavy, Power]",
-  "Extreme Metal [Death, Black, Doom, Sludge]",
-  "Prog & Psychedelia",
-  "Alt-Rock Era [90s-00s, Grunge]",
-  "Hard Rock - Classic - [60s-70s]",
-  "Hard Rock - Modern - [80s+]",
-  "Indie & Shoegaze",
-  "Jazz",
-  "Blues",
-  "Ambient, VGM & OST [Dungeon Synth, VGM]",
-  "Vaporwave [Barber Beats, Chill]",
-  "Retrowave [Synthwave]",
-  "Pop",
-  "Groove [Funk, Disco, Soul, R&B]",
-  "Hyperpop",
-  "Hip Hop [Rap, Trap]",
-  "Industrial & Goth",
-  "Trip Hop",
-  "DnB & Breaks [Jungle]",
-  "Big Beat & Chemical Breaks",
-  "Electroswing",
-  "House [incl. Deep House]",
-  "French House, Filter House",
-  "UK Garage [incl. Dubstep]",
-  "Dark Electro [Midtempo, EBM]",
-  "World Beats [Organic]",
-  "Modern Techno [Minimal, Melodic]",
-  "Techno [Upbeat]",
-  "Techno [Slower]",
-  "Americana & Folk [Acoustic]",
-  "Latino [Salsa, Merengue, Son Cubano, Cumbia]",
-  "Iberian [Flamenco, Fado, Rumba]",
-  "Caribbean [Reggae, Ska]",
-  "Rock Nacional [Uru/Arg]",
-  "Latin Classics [Tango, Oldies]",
-  "Classical",
-];
+// VALID_GENRES is loaded from genre-name-list.json via config.js.
 
 function validateGenre(genre) {
   // Strip the "[DJ SET]" suffix before validating

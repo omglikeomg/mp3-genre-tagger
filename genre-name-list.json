@@ -1,199 +1,43 @@
 {
   "music_library_genres": [
-    {
-      "original": "classic rock + rockabilly",
-      "refined": "Vintage Rock [Classic, Rockabilly]",
-      "rating": 7
-    },
-    {
-      "original": "punk + psychobilly",
-      "refined": "Punk [incl. Psychobilly]",
-      "rating": 8
-    },
-    {
-      "original": "nu metal",
-      "refined": "Nu Metal",
-      "rating": 10
-    },
-    {
-      "original": "heavy metal + power metal",
-      "refined": "Traditional Metal [Heavy, Power]",
-      "rating": 7
-    },
-    {
-      "original": "extreme metal (death metal, black metal, doom metal, sludge metal, stoner metal, etc.)",
-      "refined": "Extreme Metal [Death, Black, Doom, Sludge]",
-      "rating": 9
-    },
-    {
-      "original": "progressive & psychedelic rock + psychedelic music",
-      "refined": "Prog & Psychedelia",
-      "rating": 6
-    },
-    {
-      "original": "90s-2000s rock + grunge",
-      "refined": "Alt-Rock Era [90s-00s, Grunge]",
-      "rating": 7
-    },
-    {
-      "original": "vintage hard rock (from the 60s and 70s)",
-      "refined": "Hard Rock - Classic - [60s-70s]",
-      "rating": 8
-    },
-    {
-      "original": "modern hard rock (80s-Present)",
-      "refined": "Hard Rock - Modern - [80s+]",
-      "rating": 9
-    },
-    {
-      "original": "shoegaze + alternative rock + indie rock",
-      "refined": "Indie & Shoegaze",
-      "rating": 7
-    },
-    {
-      "original": "jazz",
-      "refined": "Jazz",
-      "rating": 10
-    },
-    {
-      "original": "blues",
-      "refined": "Blues",
-      "rating": 10
-    },
-    {
-      "original": "dungeon synth, videogame music & other ambient music",
-      "refined": "Ambient, VGM & OST [Dungeon Synth, VGM]",
-      "rating": 6
-    },
-    {
-      "original": "barber beats, vaporwave and other chill electronica",
-      "refined": "Vaporwave [Barber Beats, Chill]",
-      "rating": 7
-    },
-    {
-      "original": "synthwave & retrowave",
-      "refined": "Retrowave [Synthwave]",
-      "rating": 8
-    },
-    {
-      "original": "pop songs",
-      "refined": "Pop",
-      "rating": 9
-    },
-    {
-      "original": "funk, disco, r&b and soul",
-      "refined": "Groove [Funk, Disco, Soul, R&B]",
-      "rating": 6
-    },
-    {
-      "original": "hyperpop",
-      "refined": "Hyperpop",
-      "rating": 10
-    },
-    {
-      "original": "hip hop, rap and trap",
-      "refined": "Hip Hop [Rap, Trap]",
-      "rating": 9
-    },
-    {
-      "original": "industrial and other \"goth\" upbeat music",
-      "refined": "Industrial & Goth",
-      "rating": 8
-    },
-    {
-      "original": "trip hop",
-      "refined": "Trip Hop",
-      "rating": 10
-    },
-    {
-      "original": "drum and bass, jungle, breakbeats",
-      "refined": "DnB & Breaks [Jungle]",
-      "rating": 8
-    },
-    {
-      "original": "big beat & chemical breaks",
-      "refined": "Big Beat & Chemical Breaks",
-      "rating": 9
-    },
-    {
-      "original": "electroswing",
-      "refined": "Electroswing",
-      "rating": 10
-    },
-    {
-      "original": "house + deep house",
-      "refined": "House [incl. Deep House]",
-      "rating": 9
-    },
-    {
-      "original": "French touch + Filter house",
-      "refined": "French House, Filter House",
-      "rating": 7
-    },
-    {
-      "original": "UK Electronics: Garage, Dubstep",
-      "refined": "UK Garage [incl. Dubstep]",
-      "rating": 8
-    },
-    {
-      "original": "Midtempo & Dark techno & EBM",
-      "refined": "Dark Electro [Midtempo, EBM]",
-      "rating": 7
-    },
-    {
-      "original": "Global & Organic Beats",
-      "refined": "World Beats [Organic]",
-      "rating": 8
-    },
-    {
-      "original": "High tech minimal & melodic techno",
-      "refined": "Modern Techno [Minimal, Melodic]",
-      "rating": 7
-    },
-    {
-      "original": "other upbeat techno",
-      "refined": "Techno [Upbeat]",
-      "rating": 5
-    },
-    {
-      "original": "other slower techno",
-      "refined": "Techno [Slower]",
-      "rating": 5
-    },
-    {
-      "original": "acoustic, folk, country and other \"unplugged\" music",
-      "refined": "Americana & Folk [Acoustic]",
-      "rating": 6
-    },
-    {
-      "original": "Latin music",
-      "refined": "Latino [Salsa, Merengue, Son Cubano, Cumbia]",
-      "rating": 8
-    },
-    {
-      "original": "Rumba, Flamenco, Fado and other Iberian music",
-      "refined": "Iberian [Flamenco, Fado, Rumba]",
-      "rating": 7
-    },
-    {
-      "original": "reggae, ska and other Caribbean music",
-      "refined": "Caribbean [Reggae, Ska]",
-      "rating": 8
-    },
-    {
-      "original": "Rock Uruguayo o Argentino",
-      "refined": "Rock Nacional [Uru/Arg]",
-      "rating": 8
-    },
-    {
-      "original": "tango and other latin oldies",
-      "refined": "Latin Classics [Tango, Oldies]",
-      "rating": 7
-    },
-    {
-      "original": "classical music",
-      "refined": "Classical",
-      "rating": 10
-    }
+    "Vintage Rock [Classic, Rockabilly]",
+    "Punk [incl. Psychobilly]",
+    "Nu Metal",
+    "Traditional Metal [Heavy, Power]",
+    "Extreme Metal [Death, Black, Doom, Sludge]",
+    "Prog & Psychedelia",
+    "Alt-Rock Era [90s-00s, Grunge]",
+    "Hard Rock - Classic - [60s-70s]",
+    "Hard Rock - Modern - [80s+]",
+    "Indie & Shoegaze",
+    "Jazz",
+    "Blues",
+    "Ambient, VGM & OST [Dungeon Synth, VGM]",
+    "Vaporwave [Barber Beats, Chill]",
+    "Retrowave [Synthwave]",
+    "Pop",
+    "Groove [Funk, Disco, Soul, R&B]",
+    "Hyperpop",
+    "Hip Hop [Rap, Trap]",
+    "Industrial & Goth",
+    "Trip Hop",
+    "DnB & Breaks [Jungle]",
+    "Big Beat & Chemical Breaks",
+    "Electroswing",
+    "House [incl. Deep House]",
+    "French House, Filter House",
+    "UK Garage [incl. Dubstep]",
+    "Dark Electro [Midtempo, EBM]",
+    "World Beats [Organic]",
+    "Modern Techno [Minimal, Melodic]",
+    "Techno [Upbeat]",
+    "Techno [Slower]",
+    "Americana & Folk [Acoustic]",
+    "Latino [Salsa, Merengue, Son Cubano, Cumbia]",
+    "Iberian [Flamenco, Fado, Rumba]",
+    "Caribbean [Reggae, Ska]",
+    "Rock Nacional [Uru/Arg]",
+    "Latin Classics [Tango, Oldies]",
+    "Classical"
   ]
 }
