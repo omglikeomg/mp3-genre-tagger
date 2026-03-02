@@ -36,6 +36,33 @@ const LOOKALIKE_MAP = [
 ];
 
 /**
+ * Produce a "fuzzy key" from a filename for last-resort matching.
+ *
+ * Strips the .mp3 extension, removes all non-alphanumeric characters
+ * (apostrophes, hyphens, punctuation, spaces, track-number tokens, etc.),
+ * and lowercases the result. This lets us match filenames where the agent
+ * deleted apostrophes ("Don't" → "Dont"), omitted track numbers
+ * ("- 01 -" absent), or used different punctuation.
+ */
+function fuzzyKey(filename) {
+  return path
+    .basename(filename, ".mp3")
+    .normalize("NFC")
+    .toLowerCase()
+    .replace(/[^a-z0-9\u00C0-\u024F\u3000-\u9FFF]/g, ""); // strip punctuation/spaces, keep accented + CJK
+}
+
+/**
+ * Like fuzzyKey but also strips all digit characters.
+ * Used for a second-pass match where track numbers embedded mid-key
+ * (e.g. "bestfusionfunk01snarkypuppy") would otherwise prevent a substring
+ * hit against a JSON key that has no track number ("bestfusionfunksnarkypuppy").
+ */
+function digitlessKey(filename) {
+  return fuzzyKey(filename).replace(/[0-9]/g, "");
+}
+
+/**
  * Try to resolve a filepath to one that actually exists on disk.
  *
  * Strategy:
@@ -43,7 +70,11 @@ const LOOKALIKE_MAP = [
  *   2. If the file exists, return it immediately.
  *   3. Otherwise, iterate through LOOKALIKE_MAP and try every single-character
  *      substitution until a match is found on disk.
- *   4. Return null if no variant resolves to an existing file.
+ *   4. Last resort: read the target directory and fuzzy-match by stripped filename.
+ *      Handles cases where the agent deleted apostrophes ("Im Confessin" vs
+ *      "I'm Confessin'") or omitted track numbers ("Artist - Title" vs
+ *      "Album - 01 - Artist - Title").
+ *   5. Return null if no variant resolves to an existing file.
  */
 function resolveFilePath(musicRoot, filepath) {
   // Step 1 — NFC normalisation (handles combining diacritics, Japanese kana, etc.)
@@ -63,7 +94,49 @@ function resolveFilePath(musicRoot, filepath) {
     }
   }
 
-  // Step 3 — exhausted all options
+  // Step 3 — fuzzy match inside the target directory
+  const targetDir = path.resolve(musicRoot, path.dirname(nfc));
+  if (fs.existsSync(targetDir)) {
+    const needle = fuzzyKey(nfc);
+    const entries = fs
+      .readdirSync(targetDir)
+      .filter((f) => f.toLowerCase().endsWith(".mp3"));
+
+    // Step 3a — exact fuzzy key match (handles deleted apostrophes, track numbers)
+    const exactMatches = entries.filter((f) => fuzzyKey(f) === needle);
+    if (exactMatches.length === 1) {
+      return path.join(targetDir, exactMatches[0]);
+    }
+    if (exactMatches.length > 1) {
+      console.warn(
+        `⚠️  Fuzzy match ambiguous for: ${filepath} — candidates: ${exactMatches.join(", ")}`,
+      );
+      return null;
+    }
+
+    // Step 3b — digit-stripped key match: strip all digits from both keys before
+    // comparing. This handles omitted track numbers that are embedded mid-key
+    // (e.g. JSON "bestfusionfunksnarkypuppyshofukan" matches disk key
+    // "bestfusionfunk01snarkypuppyshofukan" once the "01" is removed from both).
+    // The needle must be at least 8 chars long after digit-stripping to avoid
+    // false positives on very short titles.
+    const digitlessNeedle = digitlessKey(nfc);
+    if (digitlessNeedle.length >= 8) {
+      const digitlessMatches = entries.filter(
+        (f) => digitlessKey(f) === digitlessNeedle,
+      );
+      if (digitlessMatches.length === 1) {
+        return path.join(targetDir, digitlessMatches[0]);
+      }
+      if (digitlessMatches.length > 1) {
+        console.warn(
+          `⚠️  Digit-stripped fuzzy match ambiguous for: ${filepath} — candidates: ${digitlessMatches.join(", ")}`,
+        );
+      }
+    }
+  }
+
+  // Step 4 — exhausted all options
   return null;
 }
 

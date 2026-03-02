@@ -28,7 +28,9 @@
     "merge-batch:dry": "node scripts/merge-batch.js --dry-run",
     "thin-artists": "node scripts/thin-artists.js",
     "fix-genres": "node scripts/fix-genres.js --apply",
-    "fix-genres:dry": "node scripts/fix-genres.js"
+    "fix-genres:dry": "node scripts/fix-genres.js",
+    "fix-filepaths": "node scripts/fix-filepaths.js --apply",
+    "fix-filepaths:dry": "node scripts/fix-filepaths.js"
   },
   "dependencies": {
     "music-metadata": "*",
