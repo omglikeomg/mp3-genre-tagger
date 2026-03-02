@@ -80,13 +80,39 @@ function backfillGenres() {
     };
 
     const absPath = path.resolve(MUSIC_ROOT, op.filepath);
-    const success = nodeID3.update(tags, absPath);
 
-    if (success) {
+    // Read the file into a Buffer via Node's fs so that Unicode file paths
+    // (e.g. Japanese characters) are handled correctly on Windows.
+    // Passing a path string directly to node-id3 causes it to call the native
+    // fs binding internally, which fails on Windows when the path contains
+    // non-ASCII characters outside the system ANSI code page.
+    let fileBuffer;
+    try {
+      fileBuffer = fs.readFileSync(absPath);
+    } catch (err) {
+      console.error(
+        `❌ Failed (could not read file): ${op.filepath} — ${err.message}`,
+      );
+      failCount++;
+      return;
+    }
+
+    const updatedBuffer = nodeID3.update(tags, fileBuffer);
+
+    if (updatedBuffer === false) {
+      console.error(`❌ Failed (tag update error): ${op.filepath}`);
+      failCount++;
+      return;
+    }
+
+    try {
+      fs.writeFileSync(absPath, updatedBuffer);
       console.log(`✅ Tagged: ${op.filepath} -> [${genreString}]`);
       successCount++;
-    } else {
-      console.error(`❌ Failed: ${op.filepath}`);
+    } catch (err) {
+      console.error(
+        `❌ Failed (could not write file): ${op.filepath} — ${err.message}`,
+      );
       failCount++;
     }
   });
